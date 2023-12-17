@@ -10,16 +10,17 @@ const listGroup = app.querySelector("#listGroup");
 
 const createList = (text) => {
   const li = document.createElement("li");
-  li.classList.add("list");
-  li.innerHTML = `<div class="border p-2 mb-2 flex justify-between items-center">
-       <div>
-         <input id="check" type="checkbox" />
-         <label for="check" class="text-sm text-neutral-700"
+  li.className = "list animate__animated animate__fadeInUp ";
+  const id = "check" + (Math.random() * 1000).toFixed(0);
+  li.innerHTML = `<div class=" group border p-2 mb-2 flex justify-between items-center overflow-hidden">
+       <div class="content">
+         <input id="${id}" type="checkbox" class="checked-list" />
+         <label for="${id}" class="text-sm text-neutral-700 list-text"
            >${text}</label
          >
        </div>
-       <div class="flex items-center gap-2">
-         <button>
+       <div class="flex items-center gap-2 translate-x-14 group-hover:translate-x-0 duration-200 ">
+         <button class="editBtn">
            <svg
              xmlns="http://www.w3.org/2000/svg"
              fill="none"
@@ -56,12 +57,41 @@ const createList = (text) => {
      </div>`;
 
   const delBtn = li.querySelector(".delBtn");
+  const editBtn = li.querySelector(".editBtn");
+  const content = li.querySelector(".content");
+  const listText = li.querySelector(".list-text");
 
   delBtn.addEventListener("click", () => {
     if (confirm("R U S T D")) {
       li.remove();
       listCounter();
     }
+  });
+
+  editBtn.addEventListener("click", () => {
+    const input = document.createElement("input");
+    input.value = listText.innerText;
+    input.className =
+      "border border-natural-800 px-3 w-[150px] focus:outline-none";
+
+    // content.innerHTML = "";
+
+    content.lastElementChild.replaceWith(input);
+    input.focus();
+    input.addEventListener("blur", () => {
+      listText.innerText = input.value;
+      content.lastElementChild.replaceWith(listText);
+    });
+  });
+
+  const inputCheckBox = li.querySelector(".checked-list");
+  inputCheckBox.addEventListener("change", () => {
+    console.log("checked");
+    const listText = li.querySelector(".list-text");
+    listText.classList.toggle("line-through");
+    const doneTotalCount = app.querySelectorAll(".checked-list:checked").length;
+
+    doneCount.innerText = doneTotalCount;
   });
 
   return li;
@@ -74,6 +104,7 @@ const listCounter = () => {
 };
 
 // Handler
+
 const addBtnHandler = () => {
   listGroup.append(createList(textInput.value));
   listCounter();
@@ -83,3 +114,9 @@ const addBtnHandler = () => {
 // event listener
 
 addBtn.addEventListener("click", addBtnHandler);
+// submitForm.addEventListener("submit", (event) => {
+//   event.preventDefault();
+//   listGroup.append(createList(textInput.value));
+//   listCounter();
+//   textInput.value = null;
+// });
